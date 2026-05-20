@@ -17,4 +17,9 @@ export const routes: Routes = [
       },
     },
   },
+  {
+    path: 'personajes/:id',
+    loadComponent: () =>
+      import('./features/people/pages/person-detail/person-detail').then(m => m.PersonDetail),
+  },
 ];

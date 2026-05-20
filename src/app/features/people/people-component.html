@@ -72,18 +72,21 @@
   @if (peopleState.data()) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">
 
-      @for (person of peopleState.data()!.results; track person.url) {
-        <article
-          class="p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
-        >
-          <h2 class="text-cyan-200 font-bold">
-            {{ person.name }}
-          </h2>
+     @for (person of peopleState.data()!.results; track person.url) {
+  <article
+    (click)="goToPerson(person)"
+    role="link"
+    tabindex="0"
+    class="p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400"
+  >
+    <h2 class="text-cyan-200 font-bold">
+      {{ person.name }}
+    </h2>
 
-          <p>Height: {{ person.height ?? 'Unknown' }}</p>
-          <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
-        </article>
-      }
+    <p>Height: {{ person.height ?? 'Unknown' }}</p>
+    <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
+  </article>
+}
 
     </div>
   }

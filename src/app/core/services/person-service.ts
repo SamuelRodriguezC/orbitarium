@@ -33,4 +33,15 @@ export class PersonService {
       }))
     );
   }
+
+
+   /**
+   * Obtiene persona por ID desde la API
+   * y transforma DTO -> modelo de dominio
+   */
+  getPerson(id: number): Observable<Person> {
+  return this.http.get<PersonDto>(`${this.baseUrl}/${id}/`).pipe(
+    map(mapPerson)
+  );
+  }
 }

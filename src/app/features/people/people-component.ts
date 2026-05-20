@@ -7,6 +7,7 @@ import { PersonService } from '../../core/services/person-service';
 import { createLoadState } from '../../core/state/create-load-state';
 import { PaginatedResponse } from '../../core/models/paginated-response.model';
 import { Person } from '../../core/models/person.model';
+import { extractPersonId } from '../../core/mappers/person.mapper';
 
 @Component({
   selector: 'app-people-component',
@@ -78,5 +79,12 @@ export class PeopleComponent {
 
     const page = new URL(prev).searchParams.get('page');
     if (page) this.goToPage(Number(page));
+  }
+
+  // Navega al detalle del personaje
+  goToPerson(person: Person) {
+    const id = extractPersonId(person.url);
+
+    this.router.navigate(['/personajes', id]);
   }
 }
