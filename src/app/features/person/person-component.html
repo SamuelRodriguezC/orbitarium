@@ -1,0 +1,23 @@
+<section aria-labelledby="people-title">
+  <h1 id="people-title">Star Wars Characters</h1>
+
+  @if (peopleState.loading()) {
+    <p role="status">Loading characters...</p>
+  }
+
+  @if (peopleState.error()) {
+    <p role="alert">{{ peopleState.error() }}</p>
+  }
+
+  @if (peopleState.data()) {
+    <ul>
+      @for (person of peopleState.data()!.results; track person.url) {
+        <li>
+          <h2>{{ person.name }}</h2>
+          <p>Height: {{ person.height ?? 'Unknown' }}</p>
+          <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
+        </li>
+      }
+    </ul>
+  }
+</section>
