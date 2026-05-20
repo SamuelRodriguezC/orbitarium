@@ -1,23 +1,90 @@
-<section aria-labelledby="people-title">
-  <h1 id="people-title">Star Wars Characters</h1>
+<section
+  aria-labelledby="people-title"
+  class="relative min-h-screen px-6 py-10 text-white overflow-hidden"
+>
 
+  <!-- BACKGROUND -->
+  <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-slate-950 to-indigo-950"></div>
+
+  <div class="absolute inset-0 -z-10 opacity-20 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(120,120,255,0.08),transparent_45%)]"></div>
+
+  <!-- HEADER -->
+  <header class="mb-10 text-center">
+    <h1 class="text-3xl md:text-5xl font-bold tracking-widest uppercase text-cyan-300">
+      ◉ Galactic Holocron
+    </h1>
+
+    <p class="text-sm text-slate-400 mt-2">
+      Star Wars Registry
+    </p>
+
+    @if (peopleState.data()) {
+      <div class="mt-4 text-cyan-400 text-sm">
+        👤 Results:
+        <span class="text-white font-bold">
+          {{ peopleState.data()!.results.length }}
+        </span>
+      </div>
+    }
+  </header>
+
+  <!-- LOADING (SKELETON UX) -->
   @if (peopleState.loading()) {
-    <p role="status">Loading characters...</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10 animate-pulse">
+      @for (i of [1,2,3,4,5,6,7,8]; track i) {
+        <div class="h-32 rounded-xl bg-white/5 border border-white/10"></div>
+      }
+    </div>
   }
 
+  <!-- ERROR -->
   @if (peopleState.error()) {
-    <p role="alert">{{ peopleState.error() }}</p>
+    <div
+      role="alert"
+      class="p-6 bg-red-500/10 border border-red-500 text-red-200 rounded-xl"
+    >
+      {{ peopleState.error() }}
+    </div>
   }
 
+  <!-- NAVIGATION -->
+  <div class="flex justify-center gap-4 mt-10">
+    <button
+      (click)="prevPage()"
+      [disabled]="!peopleState.data()?.previous"
+      aria-label="Previous page"
+      class="px-4 py-2 rounded-xl border border-white/20 bg-white/5 disabled:opacity-30"
+    >
+      ⬅ Previous
+    </button>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="!peopleState.data()?.next"
+      aria-label="Next page"
+      class="px-4 py-2 rounded-xl border border-white/20 bg-white/5 disabled:opacity-30"
+    >
+      Next ➡
+    </button>
+  </div>
+
+  <!-- GRID -->
   @if (peopleState.data()) {
-    <ul>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">
+
       @for (person of peopleState.data()!.results; track person.url) {
-        <li>
-          <h2>{{ person.name }}</h2>
+        <article
+          class="p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
+        >
+          <h2 class="text-cyan-200 font-bold">
+            {{ person.name }}
+          </h2>
+
           <p>Height: {{ person.height ?? 'Unknown' }}</p>
           <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
-        </li>
+        </article>
       }
-    </ul>
+
+    </div>
   }
 </section>

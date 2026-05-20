@@ -1,46 +1,36 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
-import { PersonDto } from '../models/person.dto';          // Contrato EXACTO que devuelve la API
-import { Person } from '../models/person.model';           // Modelo de dominio que usa la app
+import { PersonDto } from '../models/person.dto';
+import { Person } from '../models/person.model';
 import { PaginatedResponse } from '../models/paginated-response.model';
-import { mapPerson } from '../mappers/person.mapper';      // Función que transforma DTO → Modelo
+import { mapPerson } from '../mappers/person.mapper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PersonService {
 
-  // Inyección moderna sin constructor (Angular actual)
+  // HttpClient moderno con inject()
   private readonly http = inject(HttpClient);
 
-  // URL base del endpoint
+  // Base API de SWAPI (centralizada en el service)
   private readonly baseUrl = 'https://swapi.py4e.com/api/people';
 
-  /**
-   * Obtiene una página de personas desde la API.
-   * 
-   * Flujo interno:
-   * 1. Se hace la petición HTTP tipada como PersonDto (formato crudo del backend).
-   * 2. Se transforma cada resultado a Person (modelo interno de la aplicación).
-   * 3. Se retorna una estructura ya limpia y lista para usar en la UI.
-   *
-   * @param page Número de página a consultar (por defecto 1)
-   * @returns Observable con datos ya transformados a Person
+   /**
+   * Obtiene personas paginadas desde la API
+   * y transforma DTO → modelo de dominio
    */
-  getPeople(page = 1) {
-    return this.http
-      // Se usa person DTO porque es lo que devuelve la API
-      .get<PaginatedResponse<PersonDto>>(`${this.baseUrl}?page=${page}`)
-      .pipe(
-        map(response => ({
-          // Conservamos propiedades como count, next y previous
-          ...response,
+  getPeople(page: number): Observable<PaginatedResponse<Person>> {
+    const url = `${this.baseUrl}?page=${page}`;
 
-          // Transformamos cada DTO en un modelo de dominio Person
-          results: response.results.map(mapPerson),
-        }))
-      );
+    return this.http.get<PaginatedResponse<PersonDto>>(url).pipe(
+      map(response => ({
+        ...response,
+        // normaliza datos hacia el modelo interno de la app
+        results: response.results.map(mapPerson),
+      }))
+    );
   }
 }
