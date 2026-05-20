@@ -9,7 +9,7 @@ export const routes: Routes = [
    {
     path: 'personajes',
     loadComponent: () =>
-      import('./features/person/person-component').then(m => m.PersonComponent),
+      import('./features/people/people-component').then(m => m.PeopleComponent),
     data: {
       seo: {
         title: 'Personajes de Star Wars',

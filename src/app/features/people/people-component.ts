@@ -9,11 +9,11 @@ import { PaginatedResponse } from '../../core/models/paginated-response.model';
 import { Person } from '../../core/models/person.model';
 
 @Component({
-  selector: 'app-person-component',
+  selector: 'app-people-component',
   standalone: true,
-  templateUrl: './person-component.html',
+  templateUrl: './people-component.html',
 })
-export class PersonComponent {
+export class PeopleComponent {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
