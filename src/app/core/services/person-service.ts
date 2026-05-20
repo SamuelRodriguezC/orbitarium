@@ -20,7 +20,7 @@ export class PersonService {
 
    /**
    * Obtiene personas paginadas desde la API
-   * y transforma DTO → modelo de dominio
+   * y transforma DTO -> modelo de dominio
    */
   getPeople(page: number): Observable<PaginatedResponse<Person>> {
     const url = `${this.baseUrl}?page=${page}`;
@@ -29,7 +29,7 @@ export class PersonService {
       map(response => ({
         ...response,
         // normaliza datos hacia el modelo interno de la app
-        results: response.results.map(mapPerson),
+        results: response.results.map(mapPerson).slice(0, 10), // 10 resultados por página
       }))
     );
   }
