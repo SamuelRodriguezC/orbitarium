@@ -1,0 +1,41 @@
+<section class="p-6 text-white">
+
+  @if (loading()) {
+    <p class="animate-pulse text-slate-400">
+      Cargando galaxia planetaria...
+    </p>
+  } @else {
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+      @for (planet of planets(); track planet.id) {
+        <article class="p-4 rounded-xl bg-slate-900 border border-slate-700">
+          
+          <h2 class="text-xl font-bold">{{ planet.name }}</h2>
+
+          <p class="text-sm text-slate-400">
+            🌫 Clima: {{ planet.climate }}
+          </p>
+
+          <p class="text-sm text-slate-400">
+            🌍 Terreno: {{ planet.terrain }}
+          </p>
+
+          <p class="mt-2 text-sm">
+            👥 Residentes: {{ planet.residents.length }}
+          </p>
+
+          @if (planet.residents.length > 0) {
+            <ul class="mt-2 text-xs text-slate-300 list-disc ml-4">
+              @for (r of planet.residents; track r) {
+                <li>{{ r }}</li>
+              }
+            </ul>
+          }
+
+        </article>
+      }
+
+    </div>
+  }
+</section>

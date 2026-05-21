@@ -22,4 +22,16 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/people/pages/person-detail/person-detail').then(m => m.PersonDetail),
   },
+  {
+    path: 'planetas',
+    loadComponent: () =>
+      import('./features/planets/planets')
+        .then(m => m.Planets),
+    data: {
+      seo: {
+        title: 'Planetas de Star Wars',
+        description: 'Descubre los planetas y sus habitantes del universo Star Wars',
+      },
+    },
+  },
 ];
