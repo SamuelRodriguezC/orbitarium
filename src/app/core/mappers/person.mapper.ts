@@ -1,4 +1,4 @@
-import { PersonDto } from '../models/person.dto';
+import { PersonDto } from '../dto/person.dto';
 import { Person } from '../models/person.model';
 
 

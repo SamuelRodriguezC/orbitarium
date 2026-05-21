@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
-import { PersonDto } from '../models/person.dto';
+import { PersonDto } from '../dto/person.dto';
 import { Person } from '../models/person.model';
 import { PaginatedResponse } from '../models/paginated-response.model';
 import { mapPerson } from '../mappers/person.mapper';
