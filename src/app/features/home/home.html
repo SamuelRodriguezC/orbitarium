@@ -1,11 +1,97 @@
-<section aria-labelledby="home-title">
-  <h1 id="home-title">{{ title() }}</h1>
+<section
+  class="relative min-h-screen overflow-hidden bg-cover bg-center"
+  style="background-image: url('/fondo.png')"
+  aria-labelledby="home-title"
+>
 
-  <p>
-    Bienvenido a Orbitarium, una exploración del universo de Star Wars con Angular v21.
-  </p>
+  <!-- 🌌 CAPA BASE OSCURA + VIÑETA -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-0"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.10),transparent_60%)]"></div>
 
-  <nav>
-    <a routerLink="/personajes">Ver personajes</a>
-  </nav>
+  <!-- ✨ ESTRELLAS FLOTANTES (layer decorativo) -->
+  <div class="absolute inset-0 opacity-40">
+    <div class="w-full h-full bg-[radial-gradient(white_1px,transparent_1px)] bg-[size:40px_40px] animate-pulse"></div>
+  </div>
+
+  <!-- 🚀 CONTENIDO -->
+  <div class="relative z-10 min-h-screen flex items-center px-6 md:px-16">
+
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-14">
+
+      <!-- 🪐 IZQUIERDA: IDENTIDAD VISUAL -->
+      <div class="text-left space-y-6 max-w-xl relative">
+
+        <!-- luz lateral decorativa -->
+        <div class="absolute -left-6 top-0 w-1 h-32 bg-cyan-400/40 blur-md"></div>
+
+        <h1 id="home-title" class="text-5xl md:text-7xl font-bold tracking-wide leading-tight">
+          <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Orbitarium
+          </span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-white/80 leading-relaxed">
+          Explora el universo de Star Wars como nunca antes
+        </p>
+
+        <!-- barra de energía -->
+        <div class="flex items-center gap-3">
+          <div class="h-px w-24 bg-cyan-400/60"></div>
+          <div class="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+          <div class="h-px w-10 bg-purple-400/40"></div>
+        </div>
+
+        <!-- micro “scanner line” -->
+        <div class="h-px w-40 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent animate-pulse"></div>
+
+      </div>
+
+      <!-- 🛸 DERECHA: CONTROLES ORBITALES -->
+      <div class="flex flex-col sm:flex-row gap-8 md:gap-12 items-center relative">
+
+        <!-- glow ambiental detrás -->
+        <div class="absolute inset-0 blur-3xl opacity-30">
+          <div class="w-40 h-40 bg-cyan-500 rounded-full absolute -top-10 -left-10"></div>
+          <div class="w-40 h-40 bg-purple-500 rounded-full absolute -bottom-10 -right-10"></div>
+        </div>
+
+        <!-- BOTÓN 1 -->
+        <a
+          href="/personajes"
+          class="group relative px-8 py-4 text-white font-medium rounded-xl
+                 bg-white/5 border border-white/20 backdrop-blur-md
+                 hover:border-cyan-300/70 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)]
+                 hover:-translate-y-1 transition-all duration-300"
+        >
+          <span class="relative z-10 tracking-wide">Personajes</span>
+
+          <!-- sweep glow -->
+          <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
+                      bg-gradient-to-r from-cyan-500/20 via-transparent to-blue-500/20 transition"></div>
+        </a>
+
+        <!-- BOTÓN 2 -->
+        <a
+          href="/planetas"
+          class="group relative px-8 py-4 text-white font-medium rounded-xl
+                 bg-white/5 border border-white/20 backdrop-blur-md
+                 hover:border-purple-300/70 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]
+                 hover:-translate-y-1 transition-all duration-300"
+        >
+          <span class="relative z-10 tracking-wide">Planetas</span>
+
+          <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
+                      bg-gradient-to-r from-purple-500/20 via-transparent to-pink-500/20 transition"></div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌠 BARRA INFERIOR TIPO HUD -->
+  <div class="absolute bottom-6 left-6 right-6 flex justify-between text-white/40 text-xs">
+    <span>SWAPI LINK ACTIVE</span>
+    <span>ORBITAL INTERFACE v1.0</span>
+  </div>
+
 </section>
