@@ -5,10 +5,10 @@ import { PersonState } from '../states/person.state';
 @Injectable({ providedIn: 'root' })
 export class PersonFacade {
 
-  private service = inject(PersonService);
-  private state = new PersonState();
+  private readonly service = inject(PersonService);
+  private readonly state = new PersonState();
 
-  // exposed state
+  // Exposición directa del estado (single source of truth)
   readonly people = this.state.people;
   readonly loading = this.state.loading;
   readonly pagination = this.state.pagination;
@@ -38,15 +38,20 @@ export class PersonFacade {
     const next = this.state.pagination().next;
     if (!next) return;
 
-    const page = new URL(next).searchParams.get('page');
-    if (page) this.loadPage(Number(page));
+    const page = this.extractPage(next);
+    if (page) this.loadPage(page);
   }
 
   prevPage() {
     const prev = this.state.pagination().previous;
     if (!prev) return;
 
-    const page = new URL(prev).searchParams.get('page');
-    if (page) this.loadPage(Number(page));
+    const page = this.extractPage(prev);
+    if (page) this.loadPage(page);
+  }
+
+  private extractPage(url: string): number | null {
+    const params = new URL(url).searchParams.get('page');
+    return params ? Number(params) : null;
   }
 }

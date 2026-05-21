@@ -10,47 +10,57 @@ import { forkJoin } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class PlanetFacade {
 
-  private planetServ = inject(PlanetService);
-  private peopleServ = inject(PersonService);
-  private state = new PlanetState();
+  private readonly planetService = inject(PlanetService);
+  private readonly peopleService = inject(PersonService);
 
-  planets = signal<Planet[]>([]);
-  people = signal<Person[]>([]);
-  loading = signal(false);
+  private readonly state = new PlanetState();
 
+  // exposición de estado
+  readonly planets = this.state.planets;
+  readonly people = this.state.people;
+  readonly loading = this.state.loading;
 
-  readonly grouped = this.createGrouped();
+  // derivado puro (SIN signals duplicados en facade)
+  readonly grouped = computed(() => {
+    const planets = this.state.planets();
+    const people = this.state.people();
+
+    const map = new Map<string, string[]>();
+
+    for (const p of people) {
+      map.set(p.homeworld, [
+        ...(map.get(p.homeworld) ?? []),
+        p.name
+      ]);
+    }
+
+    return planets.map(planet => ({
+      ...planet,
+      residents: map.get(planet.url) ?? []
+    }));
+  });
 
   load() {
     this.state.loading.set(true);
 
     forkJoin({
-      planets: this.planetServ.getAll(),
-      people: this.peopleServ.getAll()
-    }).subscribe(({ planets, people }) => {
-
-      this.state.planets.set(planets.map(PlanetMapper.toModel));
-      this.state.people.set(people);
-
-      this.state.loading.set(false);
+      planets: this.planetService.getAll(),
+      people: this.peopleService.getAll()
+    }).subscribe({
+      next: ({ planets, people }) => {
+        this.state.planets.set(planets.map(PlanetMapper.toModel));
+        this.state.people.set(people);
+        this.state.loading.set(false);
+      },
+      error: () => {
+        this.state.loading.set(false);
+      }
     });
   }
 
-  private createGrouped() {
-    return computed(() => {
-      const people = this.state.people();
-
-      const map = new Map<string, string[]>();
-
-      for (const p of people) {
-        const key = p.homeworld;
-        map.set(key, [...(map.get(key) ?? []), p.name]);
-      }
-
-      return this.state.planets().map(planet => ({
-        ...planet,
-        residents: map.get(planet.url) ?? []
-      }));
-    });
+  clear() {
+    this.state.planets.set([]);
+    this.state.people.set([]);
+    this.state.loading.set(false);
   }
 }

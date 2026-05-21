@@ -5,8 +5,8 @@ import { PersonDetailState } from '../states/person-detail.state';
 @Injectable({ providedIn: 'root' })
 export class PersonDetailFacade {
 
-  private service = inject(PersonService);
-  private state = new PersonDetailState();
+  private readonly service = inject(PersonService);
+  private readonly state = new PersonDetailState();
 
   readonly person = this.state.person;
   readonly loading = this.state.loading;
@@ -20,9 +20,14 @@ export class PersonDetailFacade {
         this.state.loading.set(false);
       },
       error: () => {
-        this.state.loading.set(false);
         this.state.person.set(null);
+        this.state.loading.set(false);
       }
     });
+  }
+
+  clear() {
+    this.state.person.set(null);
+    this.state.loading.set(false);
   }
 }
