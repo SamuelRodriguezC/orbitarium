@@ -4,7 +4,7 @@ import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { map, switchMap, shareReplay } from 'rxjs';
 
 import { PersonService } from '../../core/services/person-service';
-import { createLoadState } from '../../core/state/create-load-state';
+import { createLoadState } from '../../core/states/create-load-state';
 import { PaginatedResponse } from '../../core/models/paginated-response.model';
 import { Person } from '../../core/models/person.model';
 import { extractPersonId } from '../../core/mappers/person.mapper';
