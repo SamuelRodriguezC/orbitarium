@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { SwapiService } from './swapi.service';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
@@ -11,37 +12,17 @@ import { mapPerson } from '../mappers/person.mapper';
   providedIn: 'root',
 })
 export class PersonService {
+  private swapi = inject(SwapiService);
 
-  // HttpClient moderno con inject()
-  private readonly http = inject(HttpClient);
-
-  // Base API de SWAPI (centralizada en el service)
-  private readonly baseUrl = 'https://swapi.py4e.com/api/people';
-
-   /**
-   * Obtiene personas paginadas desde la API
-   * y transforma DTO -> modelo de dominio
-   */
-  getPeople(page: number): Observable<PaginatedResponse<Person>> {
-    const url = `${this.baseUrl}?page=${page}`;
-
-    return this.http.get<PaginatedResponse<PersonDto>>(url).pipe(
-      map(response => ({
-        ...response,
-        // normaliza datos hacia el modelo interno de la app
-        results: response.results.map(mapPerson).slice(0, 10), // 10 resultados por página
-      }))
-    );
+  getPage(page: number) {
+    return this.swapi.getPage<PaginatedResponse<Person>>('people', page);
   }
 
+  getAll() {
+    return this.swapi.getAll<Person>('people');
+  }
 
-   /**
-   * Obtiene persona por ID desde la API
-   * y transforma DTO -> modelo de dominio
-   */
-  getPerson(id: number): Observable<Person> {
-  return this.http.get<PersonDto>(`${this.baseUrl}/${id}/`).pipe(
-    map(mapPerson)
-  );
+  getById(id: number) {
+  return this.swapi.getById<Person>('people', id);
   }
 }

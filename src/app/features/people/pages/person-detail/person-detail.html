@@ -1,42 +1,33 @@
-<section class="min-h-screen text-white px-6 py-10 bg-gradient-to-br from-black via-slate-950 to-indigo-950">
+<section class="min-h-screen px-6 py-10 text-white">
 
-  @if (person()) {
+  @if (loading()) {
+    <div class="animate-pulse text-slate-400">
+      Loading character data...
+    </div>
+  }
 
-    <header class="mb-10 text-center">
-      <h1 class="text-4xl font-bold text-cyan-300 tracking-widest">
+  @if (person() && !loading()) {
+    <article class="max-w-xl mx-auto p-6 rounded-xl bg-white/5 border border-white/10">
+
+      <h1 class="text-3xl font-bold text-cyan-300">
         {{ person()!.name }}
       </h1>
 
-      <p class="text-slate-400 text-sm mt-2">
-        Galactic Identity Registry
-      </p>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-
-      <div class="p-5 rounded-xl bg-white/5 border border-white/10">
-        <p><b>Height:</b> {{ person()!.height ?? 'Unknown' }}</p>
-        <p><b>Mass:</b> {{ person()!.mass ?? 'Unknown' }}</p>
-        <p><b>Gender:</b> {{ person()!.gender }}</p>
-        <p><b>Birth Year:</b> {{ person()!.birth_year }}</p>
+      <div class="mt-4 space-y-2 text-slate-300">
+        <p><strong>Height:</strong> {{ person()!.height ?? 'Unknown' }}</p>
+        <p><strong>Mass:</strong> {{ person()!.mass ?? 'Unknown' }}</p>
+        <p><strong>Hair Color:</strong> {{ person()!.hair_color }}</p>
+        <p><strong>Skin Color:</strong> {{ person()!.skin_color }}</p>
+        <p><strong>Birth Year:</strong> {{ person()!.birth_year }}</p>
       </div>
 
-      <div class="p-5 rounded-xl bg-white/5 border border-white/10">
-        <p><b>Hair:</b> {{ person()!.hair_color }}</p>
-        <p><b>Skin:</b> {{ person()!.skin_color }}</p>
-        <p><b>Eye:</b> {{ person()!.eye_color }}</p>
-      </div>
+    </article>
+  }
 
-      <div class="md:col-span-2 p-5 rounded-xl bg-white/5 border border-white/10">
-        <p><b>Homeworld:</b> {{ person()!.homeworld }}</p>
-        <p><b>Films:</b> {{ person()!.films.length }}</p>
-        <p><b>Starships:</b> {{ person()!.starships.length }}</p>
-      </div>
-
+  @if (!loading() && !person()) {
+    <div class="text-center text-red-300">
+      Character not found in the galaxy archive.
     </div>
-
-  } @else {
-    <p class="text-center text-slate-400">Loading holocron data...</p>
   }
 
 </section>

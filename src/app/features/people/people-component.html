@@ -18,18 +18,18 @@
       Star Wars Registry
     </p>
 
-    @if (peopleState.data()) {
+    @if (people().length) {
       <div class="mt-4 text-cyan-400 text-sm">
         👤 Results:
         <span class="text-white font-bold">
-          {{ peopleState.data()!.results.length }}
+          {{ people().length }}
         </span>
       </div>
     }
   </header>
 
-  <!-- LOADING (SKELETON UX) -->
-  @if (peopleState.loading()) {
+  <!-- LOADING -->
+  @if (loading()) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10 animate-pulse">
       @for (i of [1,2,3,4,5,6,7,8]; track i) {
         <div class="h-32 rounded-xl bg-white/5 border border-white/10"></div>
@@ -37,13 +37,33 @@
     </div>
   }
 
-  <!-- ERROR -->
-  @if (peopleState.error()) {
-    <div
-      role="alert"
-      class="p-6 bg-red-500/10 border border-red-500 text-red-200 rounded-xl"
-    >
-      {{ peopleState.error() }}
+  <!-- GRID -->
+  @if (!loading() && people().length) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">
+
+      @for (person of people(); track person.url) {
+        <article
+          (click)="goToPerson(person)"
+          role="link"
+          tabindex="0"
+          class="p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400"
+        >
+          <h2 class="text-cyan-200 font-bold">
+            {{ person.name }}
+          </h2>
+
+          <p>Height: {{ person.height ?? 'Unknown' }}</p>
+          <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
+        </article>
+      }
+
+    </div>
+  }
+
+  <!-- EMPTY STATE -->
+  @if (!loading() && !people().length) {
+    <div class="text-center mt-10 text-slate-400">
+      No citizens found in the galaxy database.
     </div>
   }
 
@@ -51,7 +71,7 @@
   <div class="flex justify-center gap-4 mt-10">
     <button
       (click)="prevPage()"
-      [disabled]="!peopleState.data()?.previous"
+      [disabled]="!pagination().previous"
       aria-label="Previous page"
       class="px-4 py-2 rounded-xl border border-white/20 bg-white/5 disabled:opacity-30"
     >
@@ -60,7 +80,7 @@
 
     <button
       (click)="nextPage()"
-      [disabled]="!peopleState.data()?.next"
+      [disabled]="!pagination().next"
       aria-label="Next page"
       class="px-4 py-2 rounded-xl border border-white/20 bg-white/5 disabled:opacity-30"
     >
@@ -68,26 +88,4 @@
     </button>
   </div>
 
-  <!-- GRID -->
-  @if (peopleState.data()) {
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">
-
-     @for (person of peopleState.data()!.results; track person.url) {
-  <article
-    (click)="goToPerson(person)"
-    role="link"
-    tabindex="0"
-    class="p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400"
-  >
-    <h2 class="text-cyan-200 font-bold">
-      {{ person.name }}
-    </h2>
-
-    <p>Height: {{ person.height ?? 'Unknown' }}</p>
-    <p>Mass: {{ person.mass ?? 'Unknown' }}</p>
-  </article>
-}
-
-    </div>
-  }
 </section>

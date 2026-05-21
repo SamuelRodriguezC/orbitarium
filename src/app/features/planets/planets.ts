@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { PlanetService } from '../../core/services/planet-service';
+import { PlanetFacade } from '../../core/facades/planet.facade';
 
 @Component({
   selector: 'app-planets',
@@ -9,12 +9,12 @@ import { PlanetService } from '../../core/services/planet-service';
 })
 export class Planets {
 
-  private service = inject(PlanetService);
+  private facade = inject(PlanetFacade);
 
-  planets = this.service.state.grouped;
-  loading = this.service.state.loading;
+  readonly planets = this.facade.grouped;
+  readonly loading = this.facade.loading;
 
   constructor() {
-    this.service.load();
+    this.facade.load();
   }
 }

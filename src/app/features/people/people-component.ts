@@ -1,12 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { map, switchMap, shareReplay } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
-import { PersonService } from '../../core/services/person-service';
-import { createLoadState } from '../../core/states/create-load-state';
-import { PaginatedResponse } from '../../core/models/paginated-response.model';
-import { Person } from '../../core/models/person.model';
+import { PersonFacade } from '../../core/facades/person.facade';
 import { extractPersonId } from '../../core/mappers/person.mapper';
 
 @Component({
@@ -16,14 +13,11 @@ import { extractPersonId } from '../../core/mappers/person.mapper';
 })
 export class PeopleComponent {
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly personService = inject(PersonService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private facade = inject(PersonFacade);
 
-  // Estado centralizado (loading, data, error)
-  readonly peopleState = createLoadState<PaginatedResponse<Person>>();
-
-  // Query param reactivo → Signal (source of truth URL)
+  // URL = source of truth
   readonly page = toSignal(
     this.route.queryParamMap.pipe(
       map(params => Number(params.get('page') ?? 1))
@@ -31,30 +25,17 @@ export class PeopleComponent {
     { initialValue: 1 }
   );
 
-  /**
-   * Flujo reactivo:
-   * page (signal) → observable → HTTP request → estado UI
-   */
-  private readonly people$ = toObservable(this.page).pipe(
-    switchMap(page => {
-      this.peopleState.setLoading();
-      return this.personService.getPeople(page);
-    }),
-    shareReplay(1)
-  );
+  // expose state
+  readonly people = this.facade.people;
+  readonly loading = this.facade.loading;
+  readonly pagination = this.facade.pagination;
 
   constructor() {
-    // Suscripción controlada con lifecycle automático (SSR-safe)
-    this.people$.subscribe({
-      next: data => this.peopleState.setData(data),
-      error: () => this.peopleState.setError('Error loading people'),
+    effect(() => {
+      this.facade.loadPage(this.page());
     });
   }
 
-  /**
-   * Cambia página actual modificando la URL
-   * (la URL es la única fuente de verdad)
-   */
   goToPage(page: number) {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -63,28 +44,16 @@ export class PeopleComponent {
     });
   }
 
-  
-  // Navegación basada en links de la API (next/previous)
   nextPage() {
-    const next = this.peopleState.data()?.next;
-    if (!next) return;
-
-    const page = new URL(next).searchParams.get('page');
-    if (page) this.goToPage(Number(page));
+    this.facade.nextPage();
   }
 
   prevPage() {
-    const prev = this.peopleState.data()?.previous;
-    if (!prev) return;
-
-    const page = new URL(prev).searchParams.get('page');
-    if (page) this.goToPage(Number(page));
+    this.facade.prevPage();
   }
 
-  // Navega al detalle del personaje
-  goToPerson(person: Person) {
+  goToPerson(person: any) {
     const id = extractPersonId(person.url);
-
     this.router.navigate(['/personajes', id]);
   }
 }

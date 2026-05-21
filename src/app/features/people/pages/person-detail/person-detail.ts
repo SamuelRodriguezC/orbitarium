@@ -1,29 +1,36 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, map } from 'rxjs';
+import { map } from 'rxjs';
 
-import { PersonService } from '../../../../core/services/person-service';
-import { extractPersonId } from '../../../../core/mappers/person.mapper';
-
+import { PersonDetailFacade } from '../../../../core/facades/person-detail.facade';
 
 @Component({
   selector: 'app-person-detail',
-  imports: [],
+  standalone: true,
   templateUrl: './person-detail.html',
 })
 export class PersonDetail {
-  private readonly route = inject(ActivatedRoute);
-  private readonly service = inject(PersonService);
 
-  // Signal reactivo basado en URL param
-  readonly person = toSignal(
+  private route = inject(ActivatedRoute);
+  private facade = inject(PersonDetailFacade);
+
+  // URL = source of truth
+  readonly id = toSignal(
     this.route.paramMap.pipe(
-      // Obtiene el id desde la URL
-      map(params => Number(params.get('id'))),
-
-      // Llama a la API cada vez que cambia el id
-      switchMap(id => this.service.getPerson(id))
-    )
+      map(params => Number(params.get('id')))
+    ),
+    { initialValue: 0 }
   );
+
+  // exposed state
+  readonly person = this.facade.person;
+  readonly loading = this.facade.loading;
+
+  constructor() {
+    effect(() => {
+      const id = this.id();
+      if (id) this.facade.load(id);
+    });
+  }
 }
